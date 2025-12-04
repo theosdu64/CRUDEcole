@@ -171,8 +171,27 @@ class StudentDAO(Dao[Student]):
     def get_student_courses(self, student_id: int) -> list:
         dao_student = StudentDAO()
         with Dao.connection.cursor() as cursor:
-            sql_get_courses = """SELECT c.id_course, c.name FROM takes t INNER JOIN course c ON c.id_course = t.id_course WHERE t.student_nbr = %s;"""
-            cursor.execute(sql_get_courses, (student_id,))
-            result = cursor.fetchall()
-            if result:
-                print(result)
+            sql = """
+                SELECT c.name AS course_name, p.first_name AS teacher_name, p.last_name AS teacher_lastname
+                from takes t
+                INNER JOIN course c ON t.id_course = c.id_course
+                INNER JOIN teacher te ON  te.id_teacher = c.id_teacher
+                INNER JOIN person p ON te.id_person = p.id_person
+                WHERE student_nbr =%s;
+            """
+            cursor.execute(sql, (student_id,))
+            rows = cursor.fetchall()
+            courses = [
+                {
+                    "course": r["course_name"],
+                    "teacher": f"{r['teacher_name']} {r['teacher_lastname']}"
+                }
+                for r in rows
+            ] if rows else []
+
+            for c in courses:
+                print(f"Cours de : {c['course']}\nProf: {c['teacher']}\n")
+
+        return courses
+
+
