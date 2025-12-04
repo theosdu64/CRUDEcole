@@ -1,4 +1,5 @@
 from ecole.daos.student_dao import StudentDAO
+from ecole.daos.teacher_dao import TeacherDAO
 from ecole.models.address import Address
 from ecole.models.student import Student
 
@@ -57,7 +58,11 @@ def delete_student_dao():
 
 def get_student_courses_dao():
     dao_student = StudentDAO()
-    dao_student.get_student_courses(2)
+    return dao_student.get_student_courses(2)
+
+def get_teachers_dao():
+    dao_teacher = TeacherDAO()
+    return dao_teacher.read_all()
 
 if __name__ == "__main__":
-    print(get_student_courses_dao())
+    print(get_teachers_dao())
