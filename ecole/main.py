@@ -1,7 +1,10 @@
+from datetime import date
+
 from ecole.daos.student_dao import StudentDAO
 from ecole.daos.teacher_dao import TeacherDAO
 from ecole.models.address import Address
 from ecole.models.student import Student
+from ecole.models.teacher import Teacher
 
 
 def test_student_dao():
@@ -64,5 +67,35 @@ def get_teachers_dao():
     dao_teacher = TeacherDAO()
     return dao_teacher.read_all()
 
+def get_teacher_by_id_dao():
+    dao_teacher = TeacherDAO()
+    return dao_teacher.read(4)
+
+def create_teacher_dao():
+        print("teacher avant creation")
+        print(get_teachers_dao())
+
+        address = Address(
+            street="29 rue du bourg",
+            city="Nancy",
+            postal_code=10000
+        )
+
+        teacher = Teacher(
+            first_name="Jean",
+            last_name="Mathieu",
+            age=55,
+            hiring_date=date(2020, 9, 2)
+        )
+        teacher.address = address
+
+        dao = TeacherDAO()
+        new_id = dao.create(teacher)
+
+        print(f"Prof cree id : {new_id}")
+        print(teacher)
+        print("teacher apres creation")
+        print(get_teachers_dao())
+
 if __name__ == "__main__":
-    print(get_teachers_dao())
+    print(get_teacher_by_id_dao())
